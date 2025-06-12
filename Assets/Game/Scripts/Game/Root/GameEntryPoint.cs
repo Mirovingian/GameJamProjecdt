@@ -12,7 +12,7 @@ class GameEntryPoint
     private Coroutines _coroutines;
     private UIRootView _uiRoot;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+/*    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void AutostartGame()
     {
         Application.targetFrameRate = 60; 
@@ -85,6 +85,6 @@ class GameEntryPoint
     {
         yield return SceneManager.LoadSceneAsync(sceneName);
     }
-
+*/
 }
 

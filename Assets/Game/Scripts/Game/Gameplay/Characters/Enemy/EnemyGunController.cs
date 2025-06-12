@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyGunController : MonoBehaviour
 {
+    public GameObject bullet;
     // Start is called before the first frame update
     void Start()
     {
