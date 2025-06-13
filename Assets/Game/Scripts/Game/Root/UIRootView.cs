@@ -9,6 +9,8 @@ public class UIRootView : MonoBehaviour
 {
     [SerializeField] private GameObject _loadingScreen;
     [SerializeField] private Transform _uiSceneContainer;
+    [SerializeField] private UIGameplay _uiGameplay;
+    [SerializeField] private UIMainMenu _uiMainMenu;
 
     private void Awake()
     {
