@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEditor.Timeline.TimelinePlaybackControls;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IEntityController
 {
     private GameInput _gameInput;
 
@@ -113,5 +113,10 @@ public class PlayerController : MonoBehaviour
             bone.bodyType = RigidbodyType2D.Dynamic;
         }
         _collider.enabled = false;
+    }
+
+    public void ChangeHealth(int amount)
+    {
+        Debug.Log("ChangeHealth");
     }
 }

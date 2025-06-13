@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IEntityController
 {
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private LayerMask playerLayer;
@@ -26,29 +26,32 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void FindPlayer()
+    private void FindPlayer()
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectionRadius, playerLayer);
-
         canSeePlayer = false;
 
-        foreach (var hit in hits)
+        string[] bodyPartsPriority = { "HeadPoint", "Body", "LegLeft", "LegRight" };
+
+        foreach (var bodyPart in bodyPartsPriority)
         {
-            if (hit.CompareTag("Player"))
+            foreach (var hit in hits)
             {
-                player = hit.transform;
-                Vector2 directionToPlayer = (player.position - transform.position).normalized;
-
-                RaycastHit2D hitObstacle = Physics2D.Raycast(
-                    transform.position,
-                    directionToPlayer,
-                    detectionRadius,
-                    obstacleLayer);
-
-                if (!hitObstacle)
+                if (hit.CompareTag("Player") && hit.gameObject.name == bodyPart)
                 {
-                    canSeePlayer = true;
-                    break;
+                    Vector2 directionToPart = (hit.transform.position - transform.position).normalized;
+
+                    RaycastHit2D hitObstacle = Physics2D.Raycast(
+                        transform.position,
+                        directionToPart,
+                        detectionRadius,
+                        obstacleLayer);
+                    if (!hitObstacle)
+                    {
+                        player = hit.transform;
+                        canSeePlayer = true;
+                        return;
+                    }
                 }
             }
         }
@@ -58,5 +61,10 @@ public class EnemyController : MonoBehaviour
         if (player == null) return;
 
         gun.Shoot(player);
+    }
+
+    public void ChangeHealth(int amount)
+    {
+
     }
 }
