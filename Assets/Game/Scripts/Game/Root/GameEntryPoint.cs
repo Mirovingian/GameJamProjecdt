@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-class GameEntryPoint
+/*class GameEntryPoint
 {
     private static GameEntryPoint _instance;
     private Coroutines _coroutines;
@@ -88,3 +88,4 @@ class GameEntryPoint
 
 }
 
+*/
