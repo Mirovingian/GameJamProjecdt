@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class CameraController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Light2D _light;
+
+    [SerializeField] private float _radius;
+
+    private void Update()
     {
-        
+        SetLightRange(_radius);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetLightRange(float radius)
     {
-        
+        _light.pointLightOuterRadius = radius;
+        _light.pointLightInnerRadius = radius - 2.4f;
     }
+
 }
