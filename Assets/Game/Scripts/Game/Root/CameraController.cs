@@ -9,10 +9,6 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] private float _radius;
 
-    private void Update()
-    {
-        SetLightRange(_radius);
-    }
 
     public void SetLightRange(float radius)
     {

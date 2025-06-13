@@ -9,6 +9,9 @@ public class BulletController : MonoBehaviour
     public Rigidbody2D rb;
     private float lifeTime = 10;
     private float timer;
+
+    public int damage = 10;
+
     public void Start()
     {
         try
@@ -25,7 +28,7 @@ public class BulletController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, rot + 180);
     }
 
-    public void Update()
+    void Update()
     {
         if(timer > lifeTime)
         {
@@ -37,5 +40,14 @@ public class BulletController : MonoBehaviour
             float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<IEntity>() != null)
+        {
+            collision.GetComponent<IEntity>().TakeDamage(damage);
+        }
+        Destroy(gameObject);
     }
 }

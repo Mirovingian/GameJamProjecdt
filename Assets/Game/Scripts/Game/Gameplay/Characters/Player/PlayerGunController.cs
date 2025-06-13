@@ -40,16 +40,6 @@ public class PlayerGunController : MonoBehaviour
 
 
         ProcessBullet();
-
-
-        //Test pill right there
-        if (Input.GetKey(KeyCode.Q) && canFire)
-        {
-            canFire = false;
-            this.AddEnergy(10);
-    
-        }
-
     }
 
 
@@ -73,8 +63,6 @@ public class PlayerGunController : MonoBehaviour
             //Decrease bullets here
             bulletsLeft -= 1;
             bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
-
- 
         }
     }
 
@@ -91,15 +79,6 @@ public class PlayerGunController : MonoBehaviour
 
         Vector2 direction = bulletSpawnPos2.position - bulletSpawnPos1.position;
         bulletRb.velocity = direction.normalized * speed; //here speed
-        curBullet.transform.localScale = Vector3.one * 5; 
-
-       /* Vector3 direction = mousePos - curBullet.transform.position;
-        if (Mathf.Abs(mousePos.x) < Mathf.Abs(transform.position.x) && Mathf.Abs(mousePos.y) < Mathf.Abs(transform.position.y))
-        {
-            direction = curBullet.transform.position - mousePos;
-        }
-        bulletRb.velocity = new Vector2(direction.x, direction.y).normalized * speed; //here speed
-        curBullet.transform.localScale = Vector3.one * 5;*/
     }
 
     public void AddEnergy(int amount)
