@@ -114,10 +114,4 @@ public class PlayerController : MonoBehaviour
         }
         _collider.enabled = false;
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(_groundCheckPoint.position, _groundCheckRadius);
-    }
 }
