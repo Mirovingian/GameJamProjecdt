@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class PlayerGunController : MonoBehaviour
 {
-    public TMP_Text test_Text; //TEST
 
     private Vector3 mousePos;
     private Camera mainCam;
     public GameObject bullet;
-    public Transform bulletTransform;
+    public Transform bulletSpawnPos1;
+    public Transform bulletSpawnPos2;
     private float timer;
     private bool canFire = true;
     public float timeBetweenFiring;
@@ -37,6 +37,7 @@ public class PlayerGunController : MonoBehaviour
         float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rotZ);
 
+
         ProcessBullet();
 
 
@@ -45,7 +46,7 @@ public class PlayerGunController : MonoBehaviour
         {
             canFire = false;
             this.AddEnergy(10);
-            test_Text.text = bulletsLeft.ToString();
+    
         }
 
     }
@@ -72,13 +73,13 @@ public class PlayerGunController : MonoBehaviour
             bulletsLeft -= 1;
             bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
 
-            test_Text.text = bulletsLeft.ToString();//TEST
+ 
         }
     }
 
     private void FireBullet()
     {
-        var curBullet = Instantiate(bullet, bulletTransform.position, Quaternion.identity);
+        var curBullet = Instantiate(bullet, bulletSpawnPos1.position, Quaternion.identity);
         var bulletRb = curBullet.GetComponent<Rigidbody2D>();
         //Calculate bullet speed
         float speed = maxSpeed;
@@ -86,13 +87,18 @@ public class PlayerGunController : MonoBehaviour
         speed *= difference;
 
         //Calculate bullet direction
-        Vector3 direction = mousePos - curBullet.transform.position;
+
+        Vector2 direction = bulletSpawnPos2.position - bulletSpawnPos1.position;
+        bulletRb.velocity = direction.normalized * speed; //here speed
+        curBullet.transform.localScale = Vector3.one * 5; 
+
+       /* Vector3 direction = mousePos - curBullet.transform.position;
         if (Mathf.Abs(mousePos.x) < Mathf.Abs(transform.position.x) && Mathf.Abs(mousePos.y) < Mathf.Abs(transform.position.y))
         {
             direction = curBullet.transform.position - mousePos;
         }
         bulletRb.velocity = new Vector2(direction.x, direction.y).normalized * speed; //here speed
-        curBullet.transform.localScale = Vector3.one * 5;
+        curBullet.transform.localScale = Vector3.one * 5;*/
     }
 
     public void AddEnergy(int amount)
