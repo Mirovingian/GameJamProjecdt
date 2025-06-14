@@ -14,6 +14,7 @@ class GameEntryPoint
     public ManagerPills _managerPills;
     public PlayerController _playerController;
     public CameraEffects _cameraEffects;
+    public ShockWaveManager _shockWaveManager;
 
     private Coroutines _coroutines;
 
@@ -22,6 +23,7 @@ class GameEntryPoint
     {
         isOverdose = true;
         _cameraEffects.SetHeartbeatEffect(true);
+        _shockWaveManager.CallShockWave();
     }
     public void EndOverdose()
     {
@@ -88,6 +90,7 @@ class GameEntryPoint
 
         _playerController = UnityEngine.Object.FindObjectOfType<PlayerController>();
         _cameraEffects = UnityEngine.Object.FindObjectOfType<CameraEffects>();
+        _shockWaveManager = UnityEngine.Object.FindObjectOfType<ShockWaveManager>();
 
 
         _uiRoot.HideLoadingScreen();

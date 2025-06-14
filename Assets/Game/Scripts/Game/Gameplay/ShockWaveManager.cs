@@ -15,16 +15,6 @@ public class ShockWaveManager : MonoBehaviour
     {
         _material = GetComponent<SpriteRenderer>().material;  
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            CallShockWave();
-        }
-    }
-
     public void CallShockWave()
     {
         _coroutine = StartCoroutine(ShockWaveAction(-0.1f, 1f));
