@@ -12,6 +12,7 @@ class GameEntryPoint
     private Coroutines _coroutines;
     private UIRootView _uiRoot;
 
+
 /*    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void AutostartGame()
     {

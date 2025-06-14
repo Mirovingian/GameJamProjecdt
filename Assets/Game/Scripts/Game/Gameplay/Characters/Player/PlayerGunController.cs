@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,7 +6,10 @@ using UnityEngine;
 
 public class PlayerGunController : MonoBehaviour
 {
+    [SerializeField] private CameraEffects effects; //TEST
 
+
+    [SerializeField] private CinemachineImpulseSource _impulseSource;
     private Vector3 mousePos;
     private Camera mainCam;
     public GameObject bullet;
@@ -79,6 +83,9 @@ public class PlayerGunController : MonoBehaviour
 
         Vector2 direction = bulletSpawnPos2.position - bulletSpawnPos1.position;
         bulletRb.velocity = direction.normalized * speed; //here speed
+
+        //_impulseSource.GenerateImpulseWithForce(difference);
+        //effects.SetHeartbeatEffect(true); //TEST
     }
 
     public void AddEnergy(int amount)
