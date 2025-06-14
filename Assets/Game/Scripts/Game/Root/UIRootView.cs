@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class UIRootView : MonoBehaviour
 {
     [SerializeField] private GameObject _loadingScreen;
+    [SerializeField] private GameObject _restartScreen;
 
     [SerializeField] private Image _healthBar;
     [SerializeField] private Image _lightBar;
@@ -18,6 +19,7 @@ public class UIRootView : MonoBehaviour
     private void Awake()
     {
         HideLoadingScreen();
+        HideRestartScreen();
     }
 
     public void ShowLoadingScreen()
@@ -48,6 +50,21 @@ public class UIRootView : MonoBehaviour
     public void ChangePillsAmountView(int value)
     {
         _pillsAmount.text = value.ToString();
+    }
+
+    public void Restart()
+    {
+        GameEntryPoint._instance.Restart();
+    }
+
+    public void ShowRestartScreen()
+    {
+        _restartScreen.SetActive(true);
+    }
+
+    public void HideRestartScreen()
+    {
+        _restartScreen.SetActive(false);
     }
 
 }

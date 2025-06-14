@@ -110,7 +110,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 9089100259592972504}
-  damage: 10
 --- !u!212 &3891865947253957765
 SpriteRenderer:
   m_ObjectHideFlags: 0

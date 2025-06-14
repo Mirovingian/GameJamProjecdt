@@ -798,8 +798,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.84, y: 0.84, z: 0.84}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3856194526649405155}
   - {fileID: 6894196344153559949}
@@ -851,6 +851,7 @@ MonoBehaviour:
   _jumpForce: 1252
   _currentHealth: 100
   _light: {fileID: 6866154186353316237}
+  _speedOfDecreasingRangeView: 0.5
 --- !u!114 &5868735653796509867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1066,7 +1067,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06656e792bd67a145b0d57e188aa9dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effects: {fileID: 0}
   _impulseSource: {fileID: 0}
   bullet: {fileID: 2541400182089005054, guid: c2ba5f82a680d9b48a27d0793f135614, type: 3}
   bulletSpawnPos1: {fileID: 8724616097601435239}

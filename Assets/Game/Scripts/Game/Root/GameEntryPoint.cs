@@ -76,7 +76,13 @@ class GameEntryPoint
         }
 
 #endif 
-        _coroutines.StartCoroutine(LoadAndStartMainMenu());
+        _coroutines.StartCoroutine(LoadAndStartGameplay());
+    }
+
+    public void Restart()
+    {
+        _uiRoot.HideRestartScreen();
+        _coroutines.StartCoroutine(LoadAndStartGameplay());
     }
 
     private IEnumerator LoadAndStartGameplay()
