@@ -8,14 +8,17 @@ using UnityEngine.SceneManagement;
 
 class GameEntryPoint
 {
-    private static GameEntryPoint _instance;
-    private Coroutines _coroutines;
-    private UIRootView _uiRoot;
+    public static GameEntryPoint _instance;
+    public UIRootView _uiRoot;
+    public ManagerPills _managerPills;
+    public PlayerController _playerController;
 
-/*    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private Coroutines _coroutines;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void AutostartGame()
     {
-        Application.targetFrameRate = 60; 
+        Application.targetFrameRate = 60;
 
         _instance = new GameEntryPoint();
         _instance.RunGame();
@@ -27,10 +30,13 @@ class GameEntryPoint
         _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
         UnityEngine.Object.DontDestroyOnLoad(_coroutines.gameObject);
 
-        var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
-        _uiRoot = UnityEngine.Object.Instantiate(prefabUIRoot); 
-
+        var prefabUIRoot = Resources.Load<UIRootView>("UIRootView");
+        _uiRoot = UnityEngine.Object.Instantiate(prefabUIRoot);
         UnityEngine.Object.DontDestroyOnLoad(_uiRoot.gameObject);
+
+        var prefabPillsManager = Resources.Load<ManagerPills>("PillsManager");
+        _managerPills = UnityEngine.Object.Instantiate(prefabPillsManager);
+        UnityEngine.Object.DontDestroyOnLoad(_managerPills);
     }
 
     private void RunGame()
@@ -54,7 +60,7 @@ class GameEntryPoint
         }
 
 #endif 
-        _coroutines.StartCoroutine(LoadAndStartGameplay());
+        _coroutines.StartCoroutine(LoadAndStartMainMenu());
     }
 
     private IEnumerator LoadAndStartGameplay()
@@ -66,6 +72,9 @@ class GameEntryPoint
 
         yield return null;
 
+        var prefabPlayer = Resources.Load<PlayerController>("Player");
+        _playerController = UnityEngine.Object.Instantiate(prefabPlayer, new Vector3(-5.415f, -0.724f, 0f), Quaternion.identity);
+
         _uiRoot.HideLoadingScreen();
     }
 
@@ -76,7 +85,7 @@ class GameEntryPoint
         yield return LoadScene(Scenes.BOOT);
         yield return LoadScene(Scenes.MAIN_MENU);
 
-        yield return null;
+        yield return new WaitForSeconds(2);
 
         _uiRoot.HideLoadingScreen();
     }
@@ -85,5 +94,5 @@ class GameEntryPoint
     {
         yield return SceneManager.LoadSceneAsync(sceneName);
     }
-*/
+
 }

@@ -10,7 +10,7 @@ public class BulletController : MonoBehaviour
     private float lifeTime = 10;
     private float timer;
 
-    public int damage = 10;
+    private int damage = -15;
 
     public void Start()
     {
@@ -49,5 +49,6 @@ public class BulletController : MonoBehaviour
             collision.GetComponent<IEntity>().TakeDamage(damage);
         }
         Destroy(gameObject);
+
     }
 }

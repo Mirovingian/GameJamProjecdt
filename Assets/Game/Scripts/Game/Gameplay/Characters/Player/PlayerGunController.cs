@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PlayerGunController : MonoBehaviour
 {
-
     private Vector3 mousePos;
     private Camera mainCam;
     public GameObject bullet;
@@ -36,8 +35,6 @@ public class PlayerGunController : MonoBehaviour
         Vector3 rotation = mousePos - transform.position;
         float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rotZ);
-       
-
 
         ProcessBullet();
     }
@@ -63,6 +60,7 @@ public class PlayerGunController : MonoBehaviour
             //Decrease bullets here
             bulletsLeft -= 1;
             bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
+            GameEntryPoint._instance._uiRoot.ChangeBulletBarView((float)bulletsLeft / bulletsToStop);
         }
     }
 
@@ -85,5 +83,6 @@ public class PlayerGunController : MonoBehaviour
     {
         bulletsLeft += amount;
         bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
+        GameEntryPoint._instance._uiRoot.ChangeBulletBarView((float)bulletsLeft / bulletsToStop);
     }
 }

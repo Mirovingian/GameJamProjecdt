@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
+using UnityEngine.Rendering.Universal;
+
 
 public class PlayerController : MonoBehaviour, IEntityController
 {
@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour, IEntityController
     [SerializeField] private LayerMask _groundLayer;
     private Vector2 _directionToMove;
     [SerializeField] private PlayerVisualController _visualController;
+    public PlayerGunController _gunController;
 
     private Rigidbody2D[] _bones;
     private CapsuleCollider2D _collider;
@@ -22,6 +23,8 @@ public class PlayerController : MonoBehaviour, IEntityController
     //--------------Ñharacteristics-------------------//
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
+    [SerializeField] private int _currentHealth = _maxHealth;
+    private const int _maxHealth = 100;
 
     private void Awake()
     {
@@ -30,6 +33,9 @@ public class PlayerController : MonoBehaviour, IEntityController
 
     private void Start()
     {
+        _light.pointLightOuterRadius = _maxLightRange;
+        _light.pointLightInnerRadius = _maxLightRange - 2.4f;
+        GameEntryPoint._instance._uiRoot.ChangeHealthBarView(_currentHealth / _maxHealth);
         _bones = GetComponentsInChildren<Rigidbody2D>();
         _collider = GetComponent<CapsuleCollider2D>();
     }
@@ -39,6 +45,9 @@ public class PlayerController : MonoBehaviour, IEntityController
         _gameInput.Enable();
         _gameInput.Gameplay.Move.performed += ChangeDirectionToMove;
         _gameInput.Gameplay.Jump.performed += Jump;
+        _gameInput.Gameplay.IncreaseVisibilityArea.performed += IncreaseVisibilityArea;
+        _gameInput.Gameplay.IncreaseBulletForce.performed += IncreaseBulletForce;
+
     }
 
     private void OnDisable()
@@ -46,25 +55,26 @@ public class PlayerController : MonoBehaviour, IEntityController
         _gameInput.Disable();
         _gameInput.Gameplay.Move.performed -= ChangeDirectionToMove;
         _gameInput.Gameplay.Jump.performed -= Jump;
+        _gameInput.Gameplay.IncreaseVisibilityArea.performed -= IncreaseVisibilityArea;
+        _gameInput.Gameplay.IncreaseBulletForce.performed += IncreaseBulletForce;
     }
 
 
     private void FixedUpdate()
     {
-        Move();
+         Move();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Death();
-        }
-
         if (OnGround())
             _visualController.Jump(false);
         else
             _visualController.Jump(true);
+
+        DecreasingLightRange();
+
+      
     }
 
     private void ChangeDirectionToMove(InputAction.CallbackContext context)
@@ -108,15 +118,62 @@ public class PlayerController : MonoBehaviour, IEntityController
 
     private void Death()
     {
-        foreach(var bone in _bones)
+        _gameInput.Disable();
+        foreach (var bone in _bones)
         {
             bone.bodyType = RigidbodyType2D.Dynamic;
         }
         _collider.enabled = false;
+        _rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    [SerializeField] private Light2D _light;
+    private const float _maxLightRange = 17;
+    private const float _minLightRange = 3;
+    private float _currentLightRange = _maxLightRange;
+    public void IncreaseLightRange(float value)
+    {
+        _currentLightRange = _currentLightRange + value;
+        _currentLightRange = Mathf.Clamp(_currentLightRange, _minLightRange, _maxLightRange);
+        _light.pointLightOuterRadius = _currentLightRange;
+        _light.pointLightInnerRadius = _currentLightRange - 2.4f;
+
+        float valueForBar = (_currentLightRange - _minLightRange) / _maxLightRange - _minLightRange;
+        GameEntryPoint._instance._uiRoot.ChangeLightBarView(valueForBar);
+    }
+
+    private void IncreaseVisibilityArea(InputAction.CallbackContext context)
+    {
+        GameEntryPoint._instance._managerPills.UseLightPill();
+    }
+
+    private void IncreaseBulletForce(InputAction.CallbackContext context)
+    {
+        GameEntryPoint._instance._managerPills.UseAmmoPill();
     }
 
     public void ChangeHealth(int amount)
     {
-        Debug.Log("ChangeHealth");
+        _currentHealth += amount;
+        Debug.Log("damage " + amount);
+        Debug.Log("currenthealth " +  _currentHealth);
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        GameEntryPoint._instance._uiRoot.ChangeHealthBarView((float)_currentHealth / _maxHealth);
+        Debug.Log((float)_currentHealth / _maxHealth);
+        if (_currentHealth <= 0)
+            Death();
+    }
+
+    [SerializeField] private const float _speedOfDecreasingRangeView = 0.5f;
+    private void DecreasingLightRange()
+    {
+        _currentLightRange -= Time.deltaTime * _speedOfDecreasingRangeView;
+        _currentLightRange = Mathf.Clamp(_currentLightRange, _minLightRange, _maxLightRange);
+
+        _light.pointLightOuterRadius = _currentLightRange;
+        _light.pointLightInnerRadius = _currentLightRange - 2.4f;
+
+        float valueForBar = (_currentLightRange - _minLightRange) / (_maxLightRange - _minLightRange);
+        GameEntryPoint._instance._uiRoot.ChangeLightBarView(valueForBar);
     }
 }

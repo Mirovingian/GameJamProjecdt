@@ -9,9 +9,6 @@ public class ManagerPills: MonoBehaviour
 {
     private int AMOUNT_OF_BULLETS_TO_ADD = 10;
 
-    public TMP_Text test_Text_1; //TEST
-    public TMP_Text test_Text_2; //TEST
-
     private int pillsForOverdose = 10;
     private float overdoseTimeWindow = 10f;
     private float overdoseEscalate = 5f;
@@ -23,9 +20,19 @@ public class ManagerPills: MonoBehaviour
     private List<float> pillsTakenTimes = new List<float>();
     private bool overdoseTriggered;
 
+    private int _currentPillsCount = 10;
+
+    private const float _lightMagnificationValue = 2f;
+
+
+    private void Start()
+    {
+        GameEntryPoint._instance._uiRoot.ChangePillsAmountView(_currentPillsCount);
+    }
+
     public void Update()
     {
-        if(overdoseTriggered)
+/*        if(overdoseTriggered)
         {
             test_Text_2.text = (overdoseEndTime - Time.time).ToString();
         }
@@ -33,15 +40,8 @@ public class ManagerPills: MonoBehaviour
         {
             EndOverdose();
             test_Text_2.text = "0";
-        }
+        }*/
         CleanupOldPills();
-
-        if(Input.GetKeyDown(KeyCode.Alpha1)) {
-            UseAmmoPill();
-        }
-        if(Input.GetKeyDown(KeyCode.Alpha2)) {
-            UseLightPill();
-        }
     }
 
     private void Overdosing()
@@ -103,7 +103,6 @@ public class ManagerPills: MonoBehaviour
             float oldestAllowedTime = Time.time - Mathf.Max(overdoseTimeWindow, overdoseEscalate * 2);
             pillsTakenTimes.RemoveAll(time => time < oldestAllowedTime);
         }
-        test_Text_1.text = pillsTakenTimes.Count.ToString();
     }
 
     private void EndOverdose()
@@ -116,16 +115,34 @@ public class ManagerPills: MonoBehaviour
     public void UseAmmoPill()
     {
         Debug.Log("Take ammo pill");
-        //Player.GetComponent<PlayerGunController>().AddEnergy(AMOUNT_OF_BULLETS_TO_ADD);
-        pillsTakenTimes.Add(Time.time);
-        CheckOverdose();
+        if (_currentPillsCount > 0)
+        {
+            --_currentPillsCount;
+            GameEntryPoint._instance._uiRoot.ChangePillsAmountView(_currentPillsCount);
+            GameEntryPoint._instance._playerController._gunController.AddEnergy(AMOUNT_OF_BULLETS_TO_ADD);
+            pillsTakenTimes.Add(Time.time);
+            CheckOverdose();
+        }
+            
     }
     public void UseLightPill()
     {
         Debug.Log("Take light pill");
-        //GameEntryPoint > light > do smt 
-        pillsTakenTimes.Add(Time.time);
-        CheckOverdose();
+        if (_currentPillsCount > 0)
+        {
+            --_currentPillsCount;
+            GameEntryPoint._instance._uiRoot.ChangePillsAmountView(_currentPillsCount);
+            GameEntryPoint._instance._playerController.IncreaseLightRange(_lightMagnificationValue);
+            pillsTakenTimes.Add(Time.time);
+            CheckOverdose();
+        }
+       
+    }
+
+    public void IncreasePillsAmount()
+    {
+        ++_currentPillsCount;
+        GameEntryPoint._instance._uiRoot.ChangePillsAmountView(_currentPillsCount);
     }
 
 }

@@ -44,6 +44,24 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""IncreaseVisibilityArea"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5179cc4-1bdf-433a-bde7-82b13f32b81f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""IncreaseBulletForce"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3dbbd8e-6999-4ddf-8dd6-74de288cdc05"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -90,6 +108,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""20cfa7b9-8e0c-4366-b367-4a97f7731e8f"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""IncreaseVisibilityArea"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1aded594-e885-49ab-a478-d7b283d8e272"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""IncreaseBulletForce"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -100,6 +140,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
+        m_Gameplay_IncreaseVisibilityArea = m_Gameplay.FindAction("IncreaseVisibilityArea", throwIfNotFound: true);
+        m_Gameplay_IncreaseBulletForce = m_Gameplay.FindAction("IncreaseBulletForce", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,12 +205,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_Jump;
+    private readonly InputAction m_Gameplay_IncreaseVisibilityArea;
+    private readonly InputAction m_Gameplay_IncreaseBulletForce;
     public struct GameplayActions
     {
         private @GameInput m_Wrapper;
         public GameplayActions(@GameInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Gameplay_Move;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+        public InputAction @IncreaseVisibilityArea => m_Wrapper.m_Gameplay_IncreaseVisibilityArea;
+        public InputAction @IncreaseBulletForce => m_Wrapper.m_Gameplay_IncreaseBulletForce;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -184,6 +230,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @IncreaseVisibilityArea.started += instance.OnIncreaseVisibilityArea;
+            @IncreaseVisibilityArea.performed += instance.OnIncreaseVisibilityArea;
+            @IncreaseVisibilityArea.canceled += instance.OnIncreaseVisibilityArea;
+            @IncreaseBulletForce.started += instance.OnIncreaseBulletForce;
+            @IncreaseBulletForce.performed += instance.OnIncreaseBulletForce;
+            @IncreaseBulletForce.canceled += instance.OnIncreaseBulletForce;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -194,6 +246,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @IncreaseVisibilityArea.started -= instance.OnIncreaseVisibilityArea;
+            @IncreaseVisibilityArea.performed -= instance.OnIncreaseVisibilityArea;
+            @IncreaseVisibilityArea.canceled -= instance.OnIncreaseVisibilityArea;
+            @IncreaseBulletForce.started -= instance.OnIncreaseBulletForce;
+            @IncreaseBulletForce.performed -= instance.OnIncreaseBulletForce;
+            @IncreaseBulletForce.canceled -= instance.OnIncreaseBulletForce;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -215,5 +273,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnIncreaseVisibilityArea(InputAction.CallbackContext context);
+        void OnIncreaseBulletForce(InputAction.CallbackContext context);
     }
 }
