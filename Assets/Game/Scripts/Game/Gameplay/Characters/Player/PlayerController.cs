@@ -35,7 +35,9 @@ public class PlayerController : MonoBehaviour, IEntityController
     {
         _light.pointLightOuterRadius = _maxLightRange;
         _light.pointLightInnerRadius = _maxLightRange - 2.4f;
+        _currentHealth = _maxHealth;
         GameEntryPoint._instance._uiRoot.ChangeHealthBarView(_currentHealth / _maxHealth);
+        GameEntryPoint._instance._uiRoot.ChangeBulletBarView(1);
         _bones = GetComponentsInChildren<Rigidbody2D>();
         _collider = GetComponent<CapsuleCollider2D>();
     }
@@ -74,6 +76,15 @@ public class PlayerController : MonoBehaviour, IEntityController
 
         DecreasingLightRange();
 
+
+        if (_currentLightRange <= 0)
+        {
+            GameEntryPoint._instance._uiRoot.ShowRestartScreen();
+        }
+        else
+        {
+            GameEntryPoint._instance._uiRoot.HideRestartScreen();
+        }
       
     }
 
@@ -116,8 +127,11 @@ public class PlayerController : MonoBehaviour, IEntityController
         return false;
     }
 
+
+    private bool isDead = false;
     public void Death()
     {
+        isDead = true;
         _gameInput.Disable();
         foreach (var bone in _bones)
         {
@@ -125,6 +139,7 @@ public class PlayerController : MonoBehaviour, IEntityController
         }
         _collider.enabled = false;
         _rb.bodyType = RigidbodyType2D.Static;
+        _speedOfDecreasingRangeView += 1.5f;
     }
 
     [SerializeField] private Light2D _light;
@@ -155,8 +170,6 @@ public class PlayerController : MonoBehaviour, IEntityController
     public void ChangeHealth(int amount)
     {
         _currentHealth += amount;
-        Debug.Log("damage " + amount);
-        Debug.Log("currenthealth " +  _currentHealth);
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         GameEntryPoint._instance._uiRoot.ChangeHealthBarView((float)_currentHealth / _maxHealth);
         Debug.Log((float)_currentHealth / _maxHealth);
@@ -164,14 +177,22 @@ public class PlayerController : MonoBehaviour, IEntityController
             Death();
     }
 
-    [SerializeField] private const float _speedOfDecreasingRangeView = 0.5f;
+    [SerializeField] private float _speedOfDecreasingRangeView = 0.5f;
     private void DecreasingLightRange()
     {
-        _currentLightRange -= Time.deltaTime * _speedOfDecreasingRangeView;
-        _currentLightRange = Mathf.Clamp(_currentLightRange, _minLightRange, _maxLightRange);
+       
 
+        if (isDead && _currentLightRange < _minLightRange + 0.01f)
+            _currentLightRange -= Time.deltaTime * _speedOfDecreasingRangeView;
+        else
+        {
+            _currentLightRange -= Time.deltaTime * _speedOfDecreasingRangeView;
+            _currentLightRange = Mathf.Clamp(_currentLightRange, _minLightRange, _maxLightRange);
+        }
+        
         _light.pointLightOuterRadius = _currentLightRange;
         _light.pointLightInnerRadius = _currentLightRange - 2.4f;
+
 
         float valueForBar = (_currentLightRange - _minLightRange) / (_maxLightRange - _minLightRange);
         GameEntryPoint._instance._uiRoot.ChangeLightBarView(valueForBar);
