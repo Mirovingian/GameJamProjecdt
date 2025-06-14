@@ -6,9 +6,6 @@ using UnityEngine;
 
 public class PlayerGunController : MonoBehaviour
 {
-    [SerializeField] private CameraEffects effects; //TEST
-
-
     [SerializeField] private CinemachineImpulseSource _impulseSource;
     private Vector3 mousePos;
     private Camera mainCam;
@@ -72,6 +69,11 @@ public class PlayerGunController : MonoBehaviour
         {
             Debug.Log("Start overdose");
             GameEntryPoint._instance.StartOverdose();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Debug.Log("End overdose");
+            GameEntryPoint._instance.EndOverdose();
         }
     }
 

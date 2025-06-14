@@ -13,18 +13,20 @@ class GameEntryPoint
     public UIRootView _uiRoot;
     public ManagerPills _managerPills;
     public PlayerController _playerController;
+    public CameraEffects _cameraEffects;
 
     private Coroutines _coroutines;
 
-    public Action OnOverdoseStart;
-    public Action OnOverdoseEnd;
+    public bool isOverdose;
     public void StartOverdose()
     {
-        OnOverdoseStart?.Invoke();
+        isOverdose = true;
+        _cameraEffects.SetHeartbeatEffect(true);
     }
     public void EndOverdose()
     {
-        OnOverdoseEnd?.Invoke();
+        isOverdose = false;
+        _cameraEffects.SetHeartbeatEffect(false);
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -85,6 +87,7 @@ class GameEntryPoint
         yield return null;
 
         _playerController = UnityEngine.Object.FindObjectOfType<PlayerController>();
+        _cameraEffects = UnityEngine.Object.FindObjectOfType<CameraEffects>();
 
 
         _uiRoot.HideLoadingScreen();

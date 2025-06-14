@@ -26,18 +26,6 @@ public class EnemyController : MonoBehaviour, IEntityController
         fireRate = _defaultFireRate;
     }
 
-    private void OnEnable()
-    {
-        GameEntryPoint._instance.OnOverdoseStart += OnSlowDownStart;
-        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
-    }
-
-    private void OnDisable()
-    {
-        GameEntryPoint._instance.OnOverdoseStart -= OnSlowDownStart;
-        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
-    }
-
     void Update()
     {
         FindPlayer();

@@ -12,30 +12,29 @@ public class BulletController : MonoBehaviour
 
     private int damage = -15;
     private Vector2 velocityBeforeSlowdown;
-    private float slowdownNumber = 2f;
+    private float slowdownNumber = 4f;
 
-    private void OnEnable()
+    private bool isOverdosed = false;
+    private void HandleOverdose()
     {
-        GameEntryPoint._instance.OnOverdoseStart += OnSlowDownStart;
-        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
-    }
+        if (GameEntryPoint._instance.isOverdose && !isOverdosed)
+        {
+            velocityBeforeSlowdown = rb.velocity;
+            rb.velocity = rb.velocity * (1/slowdownNumber);
+            rb.gravityScale *= (1/ Mathf.Pow(slowdownNumber, 2));
+            isOverdosed = true;
 
-    private void OnDisable()
-    {
-        GameEntryPoint._instance.OnOverdoseStart -= OnSlowDownStart;
-        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
-    }
-
-    private void OnSlowDownStart()
-    {
-        velocityBeforeSlowdown = rb.velocity;
-        rb.velocity = rb.velocity * slowdownNumber;
-        rb.gravityScale *= Mathf.Pow(slowdownNumber, 2);
-    }
-    private void OnSlowDownEnd()
-    {
-        rb.velocity = velocityBeforeSlowdown;
-        rb.gravityScale = 1f;
+        }
+        else if(!GameEntryPoint._instance.isOverdose && !isOverdosed) {
+            return;
+        }
+        else if(!GameEntryPoint._instance.isOverdose)
+        {
+            rb.velocity = velocityBeforeSlowdown;
+            rb.gravityScale = 1f;
+            isOverdosed = false;
+        }
+        
     }
 
     public void Start()
@@ -56,7 +55,8 @@ public class BulletController : MonoBehaviour
 
     void Update()
     {
-        if(timer > lifeTime)
+        HandleOverdose();
+        if (timer > lifeTime)
         {
             Destroy(gameObject);
         }
