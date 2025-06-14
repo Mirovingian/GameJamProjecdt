@@ -11,6 +11,32 @@ public class BulletController : MonoBehaviour
     private float timer;
 
     public int damage = 10;
+    private Vector2 velocityBeforeSlowdown;
+    private float slowdownNumber = 2f;
+
+    private void OnEnable()
+    {
+        GameEntryPoint._instance.OnOverdoseStart += OnSlowDownStart;
+        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
+    }
+
+    private void OnDisable()
+    {
+        GameEntryPoint._instance.OnOverdoseStart -= OnSlowDownStart;
+        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
+    }
+
+    private void OnSlowDownStart()
+    {
+        velocityBeforeSlowdown = rb.velocity;
+        rb.velocity = rb.velocity * slowdownNumber;
+        rb.gravityScale *= Mathf.Pow(slowdownNumber, 2);
+    }
+    private void OnSlowDownEnd()
+    {
+        rb.velocity = velocityBeforeSlowdown;
+        rb.gravityScale = 1f;
+    }
 
     public void Start()
     {
@@ -26,7 +52,7 @@ public class BulletController : MonoBehaviour
         Vector3 rotation = transform.position - mousePos;
         float rot = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rot + 180);
-    }
+    }   
 
     void Update()
     {

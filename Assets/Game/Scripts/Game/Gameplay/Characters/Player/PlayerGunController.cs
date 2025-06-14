@@ -68,6 +68,11 @@ public class PlayerGunController : MonoBehaviour
             bulletsLeft -= 1;
             bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
         }
+
+        if (Input.GetMouseButton(1))
+        {
+            GameEntryPoint._instance.StartOverdose();
+        }
     }
 
     private void FireBullet()

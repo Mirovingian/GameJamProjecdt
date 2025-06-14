@@ -11,10 +11,33 @@ public class EnemyController : MonoBehaviour, IEntityController
     [SerializeField] private EnemyGunController gun;
 
     [SerializeField] private float fireRate = 1f;
+    private float _defaultFireRate;
 
     private Transform player;
     private float nextFireTime;
     private bool canSeePlayer;
+    private void OnSlowDownStart()
+    {
+        _defaultFireRate = fireRate;
+        fireRate *= 0.5f;
+    }
+    private void OnSlowDownEnd()
+    {
+        fireRate = _defaultFireRate;
+    }
+
+    private void OnEnable()
+    {
+        GameEntryPoint._instance.OnOverdoseStart += OnSlowDownStart;
+        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
+    }
+
+    private void OnDisable()
+    {
+        GameEntryPoint._instance.OnOverdoseStart -= OnSlowDownStart;
+        GameEntryPoint._instance.OnOverdoseEnd += OnSlowDownEnd;
+    }
+
     void Update()
     {
         FindPlayer();
