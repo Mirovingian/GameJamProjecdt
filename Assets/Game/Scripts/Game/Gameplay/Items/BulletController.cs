@@ -12,6 +12,7 @@ public class BulletController : MonoBehaviour
 
     private int damage = -15;
     private Vector2 velocityBeforeSlowdown;
+    private float gravitySaved;
     private float slowdownNumber = 4f;
 
     private bool isOverdosed = false;
@@ -20,6 +21,7 @@ public class BulletController : MonoBehaviour
         if (GameEntryPoint._instance.isOverdose && !isOverdosed)
         {
             velocityBeforeSlowdown = rb.velocity;
+            gravitySaved = rb.gravityScale;
             rb.velocity = rb.velocity * (1/slowdownNumber);
             rb.gravityScale *= (1/ Mathf.Pow(slowdownNumber, 2));
             isOverdosed = true;
@@ -31,7 +33,7 @@ public class BulletController : MonoBehaviour
         else if(!GameEntryPoint._instance.isOverdose)
         {
             rb.velocity = velocityBeforeSlowdown;
-            rb.gravityScale = 1f;
+            rb.gravityScale = gravitySaved;
             isOverdosed = false;
         }
         

@@ -403,8 +403,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00020065159, y: -0.1958107}
-  m_Size: {x: 0.2, y: 0.40000004}
+  m_Offset: {x: 0.0075228214, y: -0.25450993}
+  m_Size: {x: 0.12276411, y: 0.25788593}
   m_Direction: 0
 --- !u!233 &3364313746798557123
 HingeJoint2D:
@@ -590,8 +590,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.001618132, y: -0.223133}
-  m_Size: {x: 0.21743628, y: 0.45}
+  m_Offset: {x: 0.003015995, y: -0.23240137}
+  m_Size: {x: 0.109306335, y: 0.29552817}
   m_Direction: 0
 --- !u!233 &2702925645348775870
 HingeJoint2D:
@@ -716,8 +716,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.39, y: -0.0025092235}
-  m_Size: {x: 1.0100002, y: 0.20346308}
+  m_Offset: {x: 0.37455288, y: -0.004053869}
+  m_Size: {x: 0.89260495, y: 0.08297589}
   m_Direction: 1
 --- !u!233 &5954459275538512686
 HingeJoint2D:
@@ -971,8 +971,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00038760155, y: -0.22313291}
-  m_Size: {x: 0.20463167, y: 0.44999993}
+  m_Offset: {x: 0.0027017593, y: -0.23703533}
+  m_Size: {x: 0.12430668, y: 0.34804857}
   m_Direction: 0
 --- !u!233 &7761958701208023530
 HingeJoint2D:
@@ -1214,6 +1214,7 @@ MonoBehaviour:
     m_Bits: 128
   gun: {fileID: 6299996320976215374}
   fireRate: 1
+  _currentHealth: 20
 --- !u!1 &6792327593554176681
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,8 +1528,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.00000009685755, y: -0.1980875}
-  m_Size: {x: 0.2, y: 0.4}
+  m_Offset: {x: -0.001544714, y: -0.24442911}
+  m_Size: {x: 0.13512182, y: 0.28260136}
   m_Direction: 0
 --- !u!233 &1552448648762531730
 HingeJoint2D:

@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour, IEntityController
         return false;
     }
 
-    private void Death()
+    public void Death()
     {
         _gameInput.Disable();
         foreach (var bone in _bones)

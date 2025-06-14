@@ -16,26 +16,53 @@ public class EnemyController : MonoBehaviour, IEntityController
     private Transform player;
     private float nextFireTime;
     private bool canSeePlayer;
-    private void OnSlowDownStart()
+
+    private Rigidbody2D[] _bones;
+    private CapsuleCollider2D _collider;
+    private Rigidbody2D _rb;
+
+    private bool isOverdosed = false;
+
+    [SerializeField] private int _currentHealth = _maxHealth;
+    private const int _maxHealth = 20;
+    private void Awake()
     {
-        _defaultFireRate = fireRate;
-        fireRate *= 0.5f;
+        _bones = GetComponentsInChildren<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
+        _collider = GetComponent<CapsuleCollider2D>();
     }
-    private void OnSlowDownEnd()
+
+    private void HandleOverdose()
     {
-        fireRate = _defaultFireRate;
+        if (GameEntryPoint._instance.isOverdose && !isOverdosed)
+        {
+            _defaultFireRate = fireRate;
+            fireRate *= 3f;
+            isOverdosed = true;
+
+        }
+        else if (!GameEntryPoint._instance.isOverdose && !isOverdosed)
+        {
+            return;
+        }
+        else if (!GameEntryPoint._instance.isOverdose)
+        {
+            fireRate = _defaultFireRate;
+            isOverdosed = false;
+        }
+
     }
 
     void Update()
     {
+        HandleOverdose();
         FindPlayer();
-
         gun.SetTargetPoint(player);
 
         if (canSeePlayer && Time.time >= nextFireTime)
         {
             Shoot();
-            nextFireTime = Time.time + 1f / fireRate;
+            nextFireTime = Time.time + fireRate;
         }
 
         if (player != null)
@@ -85,14 +112,29 @@ public class EnemyController : MonoBehaviour, IEntityController
     }
     void Shoot()
     {
-        Debug.Log("Shoot");
         if (player == null) return;
 
         gun.Shoot(player);
     }
 
+    public IEnumerator Death()
+    {
+        foreach (var bone in _bones)
+        {
+            bone.bodyType = RigidbodyType2D.Dynamic;
+        }
+        _collider.enabled = false;
+        _rb.bodyType = RigidbodyType2D.Static;
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+    }
+
+
     public void ChangeHealth(int amount)
     {
-        Debug.Log("Change Helath Enemy");
+        _currentHealth += amount;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
+        if (_currentHealth <= 0)
+            StartCoroutine(Death());
     }
 }

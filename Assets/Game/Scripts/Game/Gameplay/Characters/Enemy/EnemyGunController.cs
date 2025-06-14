@@ -10,8 +10,7 @@ public class EnemyGunController : MonoBehaviour
     public Transform bulletSpawnPos2;
 
     private Transform target;
-
-
+    private bool isOverdosed = false;
 
     void Update()
     {
