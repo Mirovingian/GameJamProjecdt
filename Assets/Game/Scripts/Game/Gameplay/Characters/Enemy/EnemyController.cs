@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour, IEntityController
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private EnemyGunController gun;
+    [SerializeField] private ParticleSystem gunParticles;
 
     [SerializeField] private float fireRate = 1f;
     private float _defaultFireRate;
@@ -36,6 +37,14 @@ public class EnemyController : MonoBehaviour, IEntityController
     {
         if (GameEntryPoint._instance.isOverdose && !isOverdosed)
         {
+            var forceModule = gunParticles.forceOverLifetime;
+
+            forceModule.enabled = true;
+
+            forceModule.x = 0f;
+            forceModule.y = -9.81f / 2f;
+            forceModule.z = 0f;
+
             _defaultFireRate = fireRate;
             fireRate *= 3f;
             isOverdosed = true;
@@ -47,6 +56,13 @@ public class EnemyController : MonoBehaviour, IEntityController
         }
         else if (!GameEntryPoint._instance.isOverdose)
         {
+            var forceModule = gunParticles.forceOverLifetime;
+
+            forceModule.enabled = true;
+
+            forceModule.x = 0f;
+            forceModule.y = -9.81f;
+            forceModule.z = 0f;
             fireRate = _defaultFireRate;
             isOverdosed = false;
         }
@@ -113,7 +129,7 @@ public class EnemyController : MonoBehaviour, IEntityController
     void Shoot()
     {
         if (player == null) return;
-
+        gunParticles.Play();
         gun.Shoot(player);
     }
 

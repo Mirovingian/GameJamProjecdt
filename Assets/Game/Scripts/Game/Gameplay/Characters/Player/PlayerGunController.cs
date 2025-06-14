@@ -20,6 +20,43 @@ public class PlayerGunController : MonoBehaviour
     private int bulletsToStop = 20;
     private int bulletsLeft = 20;
     public AnimationCurve speedCurve;
+
+    [SerializeField] private ParticleSystem gunParticles;
+    private bool isOverdosed = false;
+
+    private void HandleOverdose()
+    {
+        if (GameEntryPoint._instance.isOverdose && !isOverdosed)
+        {
+            var forceModule = gunParticles.forceOverLifetime;
+
+            forceModule.enabled = true;
+
+            forceModule.x = 0f;
+            forceModule.y = -9.81f / 2f;
+            forceModule.z = 0f;
+
+            isOverdosed = true;
+
+        }
+        else if (!GameEntryPoint._instance.isOverdose && !isOverdosed)
+        {
+            return;
+        }
+        else if (!GameEntryPoint._instance.isOverdose)
+        {
+            var forceModule = gunParticles.forceOverLifetime;
+
+            forceModule.enabled = true;
+
+            forceModule.x = 0f;
+            forceModule.y = -9.81f;
+            forceModule.z = 0f;
+            isOverdosed = false;
+        }
+
+    }
+
     void Start()
     {
         try
@@ -33,6 +70,7 @@ public class PlayerGunController : MonoBehaviour
 
     void Update()
     {
+        HandleOverdose();
         mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
         Vector3 rotation = mousePos - transform.position;
         float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
@@ -92,6 +130,7 @@ public class PlayerGunController : MonoBehaviour
         bulletRb.velocity = direction.normalized * speed; //here speed
 
         _impulseSource.GenerateImpulseWithForce(difference);
+        gunParticles.Play();
     }
 
     public void AddEnergy(int amount)

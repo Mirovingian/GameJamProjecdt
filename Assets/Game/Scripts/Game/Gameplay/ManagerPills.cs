@@ -43,6 +43,7 @@ public class ManagerPills: MonoBehaviour
     {
         pillsInOverdoseNow++;
         //Trigger camera 
+        GameEntryPoint._instance.TickOverdose();
         overdoseEndTime = Time.time + overdoseEscalate;
         if (pillsInOverdoseNow >= pillsInOverdose)
         {

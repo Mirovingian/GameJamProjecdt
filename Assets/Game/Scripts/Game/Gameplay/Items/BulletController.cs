@@ -9,6 +9,9 @@ public class BulletController : MonoBehaviour
     public Rigidbody2D rb;
     private float lifeTime = 10;
     private float timer;
+    [SerializeField]
+    private ParticleSystem collideParticles;
+
 
     private int damage = -15;
     private Vector2 velocityBeforeSlowdown;
@@ -75,6 +78,9 @@ public class BulletController : MonoBehaviour
         if (collision.GetComponent<IEntity>() != null)
         {
             collision.GetComponent<IEntity>().TakeDamage(damage);
+        }
+        if(collision.GetComponent<BulletController>() != null) {
+            collision.GetComponent<BulletController>().collideParticles.Play();
         }
         Destroy(gameObject);
 

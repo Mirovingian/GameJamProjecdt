@@ -25,6 +25,11 @@ class GameEntryPoint
         _cameraEffects.SetHeartbeatEffect(true);
         _shockWaveManager.CallShockWave();
     }
+    public void TickOverdose()
+    {
+        _cameraEffects.DescreseZoom();
+        _shockWaveManager.CallShockWave();
+    }
     public void EndOverdose()
     {
         isOverdose = false;
