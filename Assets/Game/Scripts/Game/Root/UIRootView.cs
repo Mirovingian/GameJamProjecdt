@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 
 public class UIRootView : MonoBehaviour
 {
     [SerializeField] private GameObject _loadingScreen;
-    [SerializeField] private Transform _uiSceneContainer;
-    [SerializeField] private UIGameplay _uiGameplay;
-    [SerializeField] private UIMainMenu _uiMainMenu;
+
+    [SerializeField] private Image _healthBar;
+    [SerializeField] private Image _lightBar;
+    [SerializeField] private Image _bulletBar;
+    [SerializeField] private TMP_Text _pillsAmount;
 
     private void Awake()
     {
@@ -27,20 +30,25 @@ public class UIRootView : MonoBehaviour
         _loadingScreen.SetActive(false);
     }
 
-    public void AttachSceneUI(GameObject sceneUI)
+    public void ChangeHealthBarView(float value)
     {
-        ClearSceneUI();
-
-        sceneUI.transform.SetParent(_uiSceneContainer, false);
+        _healthBar.fillAmount = value;
     }
 
-    private void ClearSceneUI()
+    public void ChangeLightBarView(float value)
     {
-        var childCount = _uiSceneContainer.childCount;
-        for (int i = 0; i < childCount; ++i)
-        {
-            Destroy(_uiSceneContainer.GetChild(i).gameObject);
-        }
+        _lightBar.fillAmount = value;
     }
+
+    public void ChangeBulletBarView(float value)
+    {
+        _bulletBar.fillAmount = value;
+    }
+
+    public void ChangePillsAmountView(int value)
+    {
+        _pillsAmount.text = value.ToString();
+    }
+
 }
 

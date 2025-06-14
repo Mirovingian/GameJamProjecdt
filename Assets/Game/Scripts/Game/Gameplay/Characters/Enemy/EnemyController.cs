@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour, IEntityController
 {
-    [SerializeField] private float detectionRadius = 5f;
+    [SerializeField] private float detectionRadius = 20f;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private EnemyGunController gun;
@@ -42,11 +42,27 @@ public class EnemyController : MonoBehaviour, IEntityController
     {
         FindPlayer();
 
+        gun.SetTargetPoint(player);
+
         if (canSeePlayer && Time.time >= nextFireTime)
         {
             Shoot();
             nextFireTime = Time.time + 1f / fireRate;
         }
+
+        if (player != null)
+        {
+            if ((transform.position - player.position).x < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            if ((transform.position - player.position).x > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+            }
+        }
+
+        
     }
 
     private void FindPlayer()
@@ -63,7 +79,7 @@ public class EnemyController : MonoBehaviour, IEntityController
                 if (hit.CompareTag("Player") && hit.gameObject.name == bodyPart)
                 {
                     Vector2 directionToPart = (hit.transform.position - transform.position).normalized;
-
+                    Debug.Log(hit.gameObject.name);
                     RaycastHit2D hitObstacle = Physics2D.Raycast(
                         transform.position,
                         directionToPart,
@@ -81,6 +97,7 @@ public class EnemyController : MonoBehaviour, IEntityController
     }
     void Shoot()
     {
+        Debug.Log("Shoot");
         if (player == null) return;
 
         gun.Shoot(player);
@@ -88,6 +105,6 @@ public class EnemyController : MonoBehaviour, IEntityController
 
     public void ChangeHealth(int amount)
     {
-
+        Debug.Log("Change Helath Enemy");
     }
 }

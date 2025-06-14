@@ -40,8 +40,6 @@ public class PlayerGunController : MonoBehaviour
         Vector3 rotation = mousePos - transform.position;
         float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rotZ);
-       
-
 
         ProcessBullet();
     }
@@ -67,10 +65,12 @@ public class PlayerGunController : MonoBehaviour
             //Decrease bullets here
             bulletsLeft -= 1;
             bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
+            GameEntryPoint._instance._uiRoot.ChangeBulletBarView((float)bulletsLeft / bulletsToStop);
         }
 
         if (Input.GetMouseButton(1))
         {
+            Debug.Log("Start overdose");
             GameEntryPoint._instance.StartOverdose();
         }
     }
@@ -89,13 +89,13 @@ public class PlayerGunController : MonoBehaviour
         Vector2 direction = bulletSpawnPos2.position - bulletSpawnPos1.position;
         bulletRb.velocity = direction.normalized * speed; //here speed
 
-        //_impulseSource.GenerateImpulseWithForce(difference);
-        //effects.SetHeartbeatEffect(true); //TEST
+        _impulseSource.GenerateImpulseWithForce(difference);
     }
 
     public void AddEnergy(int amount)
     {
         bulletsLeft += amount;
         bulletsLeft = Mathf.Clamp(bulletsLeft, 0, bulletsToStop);
+        GameEntryPoint._instance._uiRoot.ChangeBulletBarView((float)bulletsLeft / bulletsToStop);
     }
 }

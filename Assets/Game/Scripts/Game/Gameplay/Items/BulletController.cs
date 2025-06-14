@@ -10,7 +10,7 @@ public class BulletController : MonoBehaviour
     private float lifeTime = 10;
     private float timer;
 
-    public int damage = 10;
+    private int damage = -15;
     private Vector2 velocityBeforeSlowdown;
     private float slowdownNumber = 2f;
 
@@ -75,5 +75,6 @@ public class BulletController : MonoBehaviour
             collision.GetComponent<IEntity>().TakeDamage(damage);
         }
         Destroy(gameObject);
+
     }
 }
