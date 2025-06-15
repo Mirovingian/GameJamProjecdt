@@ -11,6 +11,7 @@ public class EnemyController : MonoBehaviour, IEntityController
     [SerializeField] private EnemyGunController gun;
     [SerializeField] private ParticleSystem gunParticles;
 
+
     [SerializeField] private float fireRate = 1f;
     private float _defaultFireRate;
 
@@ -24,13 +25,15 @@ public class EnemyController : MonoBehaviour, IEntityController
 
     private bool isOverdosed = false;
 
-    [SerializeField] private int _currentHealth = _maxHealth;
-    private const int _maxHealth = 20;
+     [SerializeField] private  int _maxHealth;
+    private int _currentHealth;
     private void Awake()
     {
         _bones = GetComponentsInChildren<Rigidbody2D>();
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CapsuleCollider2D>();
+
+        _currentHealth = _maxHealth;
     }
 
     private void HandleOverdose()
@@ -71,27 +74,31 @@ public class EnemyController : MonoBehaviour, IEntityController
 
     void Update()
     {
-        HandleOverdose();
-        FindPlayer();
-        gun.SetTargetPoint(player);
-
-        if (canSeePlayer && Time.time >= nextFireTime)
+        if (!_isDead)
         {
-            Shoot();
-            nextFireTime = Time.time + fireRate;
-        }
+            HandleOverdose();
+            FindPlayer();
+            gun.SetTargetPoint(player);
 
-        if (player != null)
-        {
-            if ((transform.position - player.position).x < 0)
+            if (canSeePlayer && Time.time >= nextFireTime)
             {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                Shoot();
+                nextFireTime = Time.time + fireRate;
             }
-            if ((transform.position - player.position).x > 0)
+
+            if (player != null)
             {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
+                if ((transform.position - player.position).x < 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                if ((transform.position - player.position).x > 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
             }
         }
+        
 
         
     }
@@ -133,15 +140,18 @@ public class EnemyController : MonoBehaviour, IEntityController
         gun.Shoot(player);
     }
 
+    private bool _isDead = false;
     public IEnumerator Death()
     {
+        _isDead = true;
         foreach (var bone in _bones)
         {
             bone.bodyType = RigidbodyType2D.Dynamic;
         }
         _collider.enabled = false;
         _rb.bodyType = RigidbodyType2D.Static;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2.4f);
+        Instantiate(GameEntryPoint._instance._pillPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 

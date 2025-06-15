@@ -1,7 +1,6 @@
-using System;
+
 using System.Collections;
-using System.Runtime.CompilerServices;
-using UnityEditor.SearchService;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +14,8 @@ class GameEntryPoint
     public PlayerController _playerController;
     public CameraEffects _cameraEffects;
     public ShockWaveManager _shockWaveManager;
+
+    public GameObject _pillPrefab;
 
     private Coroutines _coroutines;
 
@@ -36,10 +37,29 @@ class GameEntryPoint
         _cameraEffects.SetHeartbeatEffect(false);
     }
 
+
+    private int _catsCount = 0;
+    public const int MaxCatsCount = 8;
+    public float _timePick = 0.2f;
+    public void IncreaseCatsCount()
+    {
+        var currentTime = Time.realtimeSinceStartup;
+        if (currentTime > _timePick + 0.2f)
+        {
+            ++_catsCount;
+            _uiRoot.SetCatsCount(_catsCount);
+            if (_catsCount == MaxCatsCount)
+            {
+                _uiRoot.ShowWinScreen();
+            }
+        }
+        _timePick = Time.realtimeSinceStartup;
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void AutostartGame()
     {
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 100;
 
         _instance = new GameEntryPoint();
         _instance.RunGame();
@@ -58,6 +78,8 @@ class GameEntryPoint
         var prefabPillsManager = Resources.Load<ManagerPills>("PillsManager");
         _managerPills = UnityEngine.Object.Instantiate(prefabPillsManager);
         UnityEngine.Object.DontDestroyOnLoad(_managerPills);
+
+        _pillPrefab = Resources.Load<GameObject>("Pill");
     }
 
     private void RunGame()
@@ -81,27 +103,44 @@ class GameEntryPoint
         }
 
 #endif 
-        _coroutines.StartCoroutine(LoadAndStartGameplay());
+        _coroutines.StartCoroutine(LoadAndStartMainMenu());
     }
 
     public void Restart()
     {
+        _managerPills._timePick = 0.2f;
+        _timePick = 0.2f;
+        _catsCount = 0;
         _uiRoot.HideRestartScreen();
+        _uiRoot.HideWinScreen();
+        _uiRoot.ChangePillsAmountView(ManagerPills.StartCountPills);
+        _uiRoot.SetCatsCount(0);
+        _managerPills._currentPillsCount = ManagerPills.StartCountPills;
+        _coroutines.StartCoroutine(LoadAndStartGameplay());
+    }
+
+    public void DownloadGameplay()
+    {
         _coroutines.StartCoroutine(LoadAndStartGameplay());
     }
 
     private IEnumerator LoadAndStartGameplay()
     {
+
+ 
+
         _uiRoot.ShowLoadingScreen();
 
         yield return LoadScene(Scenes.BOOT);
         yield return LoadScene(Scenes.GAMEPLAY);
+        _uiRoot.HideMainMenu();
+        _uiRoot.ShowGameplayUI();
+        _instance._playerController = UnityEngine.Object.FindObjectOfType<PlayerController>();
+        _cameraEffects = UnityEngine.Object.FindObjectOfType<CameraEffects>();
+        _shockWaveManager = UnityEngine.Object.FindObjectOfType<ShockWaveManager>();
 
         yield return null;
 
-        _playerController = UnityEngine.Object.FindObjectOfType<PlayerController>();
-        _cameraEffects = UnityEngine.Object.FindObjectOfType<CameraEffects>();
-        _shockWaveManager = UnityEngine.Object.FindObjectOfType<ShockWaveManager>();
 
 
         _uiRoot.HideLoadingScreen();
@@ -114,7 +153,9 @@ class GameEntryPoint
         yield return LoadScene(Scenes.BOOT);
         yield return LoadScene(Scenes.MAIN_MENU);
 
-        yield return new WaitForSeconds(2);
+        yield return null;
+
+        _uiRoot.ShowMainMenu();
 
         _uiRoot.HideLoadingScreen();
     }

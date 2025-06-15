@@ -1,8 +1,9 @@
 
-using UnityEditor.SceneManagement;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
+
 
 
 public class PlayerController : MonoBehaviour, IEntityController
@@ -64,11 +65,18 @@ public class PlayerController : MonoBehaviour, IEntityController
 
     private void FixedUpdate()
     {
-         Move();
+        Move();
     }
 
     private void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
+
         if (OnGround())
             _visualController.Jump(false);
         else
@@ -85,7 +93,7 @@ public class PlayerController : MonoBehaviour, IEntityController
         {
             GameEntryPoint._instance._uiRoot.HideRestartScreen();
         }
-      
+
     }
 
     private void ChangeDirectionToMove(InputAction.CallbackContext context)
@@ -106,7 +114,7 @@ public class PlayerController : MonoBehaviour, IEntityController
 
     private void Move()
     {
-        _rb.velocity = new Vector2 (_directionToMove.x * _speed, _rb.velocity.y);
+        _rb.velocity = new Vector2(_directionToMove.x * _speed, _rb.velocity.y);
     }
 
     private void Jump(InputAction.CallbackContext context)
@@ -128,7 +136,7 @@ public class PlayerController : MonoBehaviour, IEntityController
     }
 
 
-    private bool isDead = false;
+    public bool isDead = false;
     public void Death()
     {
         isDead = true;
@@ -159,12 +167,22 @@ public class PlayerController : MonoBehaviour, IEntityController
 
     private void IncreaseVisibilityArea(InputAction.CallbackContext context)
     {
-        GameEntryPoint._instance._managerPills.UseLightPill();
+        if (GameEntryPoint._instance._managerPills.UseLightPill())
+        {
+            PlayEatingEffect();
+            PlayEatingSound();
+        }
+       
     }
 
     private void IncreaseBulletForce(InputAction.CallbackContext context)
     {
-        GameEntryPoint._instance._managerPills.UseAmmoPill();
+        if (GameEntryPoint._instance._managerPills.UseAmmoPill())
+        {
+            PlayEatingEffect();
+            PlayEatingSound();
+        }
+       
     }
 
     public void ChangeHealth(int amount)
@@ -180,7 +198,7 @@ public class PlayerController : MonoBehaviour, IEntityController
     [SerializeField] private float _speedOfDecreasingRangeView = 0.5f;
     private void DecreasingLightRange()
     {
-       
+
 
         if (isDead && _currentLightRange < _minLightRange + 0.01f)
             _currentLightRange -= Time.deltaTime * _speedOfDecreasingRangeView;
@@ -189,7 +207,7 @@ public class PlayerController : MonoBehaviour, IEntityController
             _currentLightRange -= Time.deltaTime * _speedOfDecreasingRangeView;
             _currentLightRange = Mathf.Clamp(_currentLightRange, _minLightRange, _maxLightRange);
         }
-        
+
         _light.pointLightOuterRadius = _currentLightRange;
         _light.pointLightInnerRadius = _currentLightRange - 2.4f;
 
@@ -197,4 +215,25 @@ public class PlayerController : MonoBehaviour, IEntityController
         float valueForBar = (_currentLightRange - _minLightRange) / (_maxLightRange - _minLightRange);
         GameEntryPoint._instance._uiRoot.ChangeLightBarView(valueForBar);
     }
+
+
+
+    [SerializeField] private ParticleSystem eatingParticles;
+
+
+    public void PlayEatingEffect()
+    {
+        if (eatingParticles != null)
+        {
+            eatingParticles.Play();
+        }
+    }
+
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _eatingTrak;
+    private void PlayEatingSound()
+    {
+        _audioSource.PlayOneShot(_eatingTrak);
+    }
+
 }

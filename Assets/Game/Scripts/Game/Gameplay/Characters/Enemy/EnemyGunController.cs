@@ -5,9 +5,11 @@ using UnityEngine;
 public class EnemyGunController : MonoBehaviour
 {
     public GameObject bulletPrefab;
-    public float speed;
+    private float speed = 10;
     public Transform bulletSpawnPos1;
     public Transform bulletSpawnPos2;
+
+    [SerializeField] private AudioSource _shootSound;
 
     private Transform target;
     private bool isOverdosed = false;
@@ -32,6 +34,8 @@ public class EnemyGunController : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPos1.position, Quaternion.identity);
         bullet.GetComponent<Rigidbody2D>().velocity = direction * speed;
         bullet.GetComponent<Rigidbody2D>().gravityScale = 0;
+
+        _shootSound.Play();
     }
 
     public void SetTargetPoint(Transform targetPoint)

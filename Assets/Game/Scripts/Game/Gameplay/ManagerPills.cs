@@ -7,6 +7,7 @@ using UnityEngine;
 
 public class ManagerPills: MonoBehaviour
 {
+    public const int StartCountPills = 10;
     private int bulletsToAdd = 10;
 
     private int pillsForOverdose = 3;
@@ -20,9 +21,11 @@ public class ManagerPills: MonoBehaviour
     private List<float> pillsTakenTimes = new List<float>();
     private bool overdoseTriggered;
 
-    private int _currentPillsCount = 10;
+    public int _currentPillsCount = StartCountPills;
 
-    private const float _lightMagnificationValue = 2f;
+    private const float _lightMagnificationValue = 6f;
+
+    [SerializeField] private AudioSource _audioSource;
 
 
     private void Start()
@@ -59,6 +62,7 @@ public class ManagerPills: MonoBehaviour
         pillsInOverdoseNow = 0;
         overdoseEndTime = Time.time + overdoseEscalate;
         GameEntryPoint._instance.StartOverdose();
+        _audioSource.Play();
     }
 
     private void CheckOverdose()
@@ -103,10 +107,11 @@ public class ManagerPills: MonoBehaviour
     {
         overdoseTriggered = false;
         GameEntryPoint._instance.EndOverdose();
+        _audioSource.Stop();
     }
 
 
-    public void UseAmmoPill()
+    public bool UseAmmoPill()
     {
         if (_currentPillsCount > 0)
         {
@@ -115,10 +120,11 @@ public class ManagerPills: MonoBehaviour
             GameEntryPoint._instance._playerController._gunController.AddEnergy(bulletsToAdd);
             pillsTakenTimes.Add(Time.time);
             CheckOverdose();
+            return true;
         }
-            
+        return false;    
     }
-    public void UseLightPill()
+    public bool UseLightPill()
     {
         if (_currentPillsCount > 0)
         {
@@ -127,14 +133,21 @@ public class ManagerPills: MonoBehaviour
             GameEntryPoint._instance._playerController.IncreaseLightRange(_lightMagnificationValue);
             pillsTakenTimes.Add(Time.time);
             CheckOverdose();
+            return true;
         }
-       
+       return false;
     }
 
+    public float _timePick = -0.2f;
     public void IncreasePillsAmount()
     {
-        ++_currentPillsCount;
-        GameEntryPoint._instance._uiRoot.ChangePillsAmountView(_currentPillsCount);
+        var currentTime = Time.realtimeSinceStartup;
+        if (currentTime > _timePick + 0.2f)
+        {
+            ++_currentPillsCount;
+            GameEntryPoint._instance._uiRoot.ChangePillsAmountView(_currentPillsCount);
+        }
+        _timePick = currentTime;
     }
 
 }

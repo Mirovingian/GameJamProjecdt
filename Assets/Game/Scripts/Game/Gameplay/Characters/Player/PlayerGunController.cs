@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerGunController : MonoBehaviour
 {
     [SerializeField] private CinemachineImpulseSource _impulseSource;
+    [SerializeField] private AudioSource _shootSound;
     private Vector3 mousePos;
     private Camera mainCam;
     public GameObject bullet;
@@ -70,13 +71,20 @@ public class PlayerGunController : MonoBehaviour
 
     void Update()
     {
-        HandleOverdose();
-        mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 rotation = mousePos - transform.position;
-        float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, rotZ);
+        Debug.Log(GameEntryPoint._instance);
+        Debug.Log(GameEntryPoint._instance._playerController);
+        Debug.Log(GameEntryPoint._instance._playerController.isDead);
+        if (!GameEntryPoint._instance._playerController.isDead)
+        {
+            HandleOverdose();
+            mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 rotation = mousePos - transform.position;
+            float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, rotZ);
 
-        ProcessBullet();
+            ProcessBullet();
+        }
+        
     }
 
 
@@ -92,7 +100,7 @@ public class PlayerGunController : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButton(0) && canFire)
+        if (Input.GetMouseButton(0) && canFire && !GameEntryPoint._instance._playerController.isDead)
         {
             canFire = false;
             this.FireBullet();
@@ -114,7 +122,7 @@ public class PlayerGunController : MonoBehaviour
             GameEntryPoint._instance.EndOverdose();
         }
     }
-
+    [SerializeField] private AudioClip _audioClip;
     private void FireBullet()
     {
         var curBullet = Instantiate(bullet, bulletSpawnPos1.position, Quaternion.identity);
@@ -130,7 +138,11 @@ public class PlayerGunController : MonoBehaviour
         bulletRb.velocity = direction.normalized * speed; //here speed
 
         _impulseSource.GenerateImpulseWithForce(difference);
-        gunParticles.Play();
+        if (bulletsLeft != 0)
+            gunParticles.Play();
+
+        _shootSound.pitch = Random.Range(0.9f, 1.1f);
+        _shootSound.PlayOneShot(_audioClip, (float)bulletsLeft / bulletsToStop);
     }
 
     public void AddEnergy(int amount)
